@@ -1,0 +1,13 @@
+.card{
+  min-height: 150px;
+}
+.cust{
+  border-radius: 35%;
+  border: 0px transparent solid;
+}
+i{
+  font-size: 26px;
+}
+.bo{
+  border: 1px black solid;
+}
