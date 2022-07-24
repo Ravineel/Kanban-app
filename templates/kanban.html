@@ -67,14 +67,37 @@
                     
                       <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <li><a class="dropdown-item" href="/edit_list">Edit</a></li>
-                        <li><a class="dropdown-item" href="/delete_list">Delete</a></li>
+                        <li><a class="dropdown-item" href="/delete_list/{{data['l_id']}}">Delete</a></li>
                       </ul>
                   </div>
                 </div>
                 </div>
                 <hr>
                 <div class="card-body">
+                  <div class="item border border-light">
+                    {% for card in ucard %}
+                      {% if card['l_id'] == data['l_id'] %}
+                        <div class="card">
+                          <div class="card-body p-2">
+                            <div class="card-title"> 
+                            {{card["name"]}}
+                            </div>
+                            <p>{{card["Description"]}}</p>
+                            <p>{{card["deadline"]}}</p>
+                          </div>
 
+                        </div>
+                    
+                      {% endif %}
+                    {% endfor %}
+                    <div class="card">
+                      <div class="card-body p-2">
+                          <form action="/create_card/{{data['l_id']}}" method="get">
+                            <button type="submit" class="btn btn-primary cust"><i class="fas fa-plus-circle"></i></button><p>Add Your Card</p>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
@@ -84,7 +107,7 @@
         <div class="col-sm6 col-md-4 col-xl-3">
           <div class="card bg-light text-center ">
             <div class="card-body ">
-              <form action="/create_list" method="get">
+              <form action="/create_list/" method="get">
                 <button type="submit" class="btn btn-primary" style="border-radius: 20%;"><i class="fas fa-plus-circle"></i></button><p>Add Your List</p>
               </form>
             </div>

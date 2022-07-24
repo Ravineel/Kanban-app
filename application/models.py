@@ -1,3 +1,4 @@
+from email.policy import default
 from pyparsing import dblSlashComment
 from .database import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -37,3 +38,14 @@ class List(db.Model):
     u_id = db.Column(db.Integer, db.ForeignKey('user.u_id'))
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)
+
+
+class Card(db.Model):
+    __tablename__ ='card'
+    c_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    l_id = db.Column(db.Integer, db.ForeignKey('list.l_id'))
+    name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=True)
+    deadline=db.Column(db.String, nullable=False)
+    completed= db.Column(db.Integer,nullable=False,default=0)
+    date_of_submission = db.Column(db.String,nullable=True)

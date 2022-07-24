@@ -1,5 +1,3 @@
-from crypt import methods
-from curses import longname
 from flask import Flask, flash, redirect, request, url_for
 from flask import render_template
 from flask import current_app as app
@@ -52,27 +50,46 @@ def signup():
         first_name=request.form["fname"]
 
         if first_name is None or email is None:
-            pass
+            flash("No input was given!")
+            return redirect('/signup')
         else:
             user = User.query.filter_by(mail=email).first()
             if user is None:
-                new_user = User(fname=first_name,lname=request.form["lname"],mail=request.form["email"],dob=request.form["dob"])
-                db.session.add(new_user)
-                db.session.commit()
-                print("uid: ",new_user.u_id)
-                pwd = generate_password_hash(request.form["password"]) 
-                new_login=Login(u_id=new_user.u_id, username=request.form["username"],password_hash=pwd)
-                db.session.add(new_login)
-                db.session.commit()
-                return redirect('/')       
+                uname = Login.query.filter_by(username=request.form["username"]).first()
+                if uname is None:
+                    try:
+                        new_user = User(fname=first_name,lname=request.form["lname"],mail=request.form["email"],dob=request.form["dob"])
+                        db.session.add(new_user)
+                        db.session.commit()
+                        pwd = generate_password_hash(request.form["password"]) 
+                        new_login=Login(u_id=new_user.u_id, username=request.form["username"],password_hash=pwd)
+                        db.session.add(new_login)
+                        db.session.commit()
+                        return redirect('/')
+                    except:
+                        flash("something went wrong")
+                        db.session.rollback()
+                        return redirect("/signup")
+                else:
+                    flash("username already exists")
+                    return redirect("/signup")
+            else:
+                flash("Email already exists!")
+                return redirect('/signup')       
 
 
 @app.route("/dashboard",methods=["GET"])
 @login_required
 def dashboard():
     user = User.query.filter_by(u_id=current_user.u_id).first()
+    
     user_list = List.query.filter_by(u_id=user.u_id).all()
-    return render_template("kanban.html",user=user,ulist=user_list)
+
+    user_card = Card.query.join(List, Card.l_id==List.l_id)\
+                .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
+                .filter(Card.l_id==List.l_id)\
+                .filter(List.u_id==user.u_id).all()  
+    return render_template("kanban.html",user=user,ulist=user_list,ucard=user_card)
 
 
 @app.route("/create_list", methods=["GET", "POST"])
@@ -86,6 +103,20 @@ def create_list():
         db.session.add(new_list)
         db.session.commit()
         flash("List Added")
+        return redirect('/dashboard')
+
+@app.route("/create_card/<int:l_id>", methods=["GET", "POST"])
+@login_required
+def create_card(l_id):
+    if request.method =="GET":
+        ulist = List.query.filter_by(l_id=l_id).first()
+        user= User.query.filter_by(u_id=current_user.u_id).first()
+        return render_template("create_card.html",user=user,ulist=ulist)
+    else:
+        new_card = Card(l_id=l_id, name=request.form["name"],description=request.form["description"], deadline=request.form["deadline"])
+        db.session.add(new_card)
+        db.session.commit()
+        flash("Card Added")
         return redirect('/dashboard')
 
 @app.route("/delete_list/<int:l_id>",methods=["DELETE"])
