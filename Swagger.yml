@@ -1,0 +1,68 @@
+openapi: '3.0.2'
+info:
+  title: Kanban App
+  version: '1.0'
+servers:
+  - url: https://localhost/v1
+paths:
+  /user:
+    get:
+      responses:
+        '200':
+          description: OK
+    post:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+  /list:
+    get:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+    post:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+    delete:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+    put:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+  /card:
+    get:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+    post:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+    delete:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+    put:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
