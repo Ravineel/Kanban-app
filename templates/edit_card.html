@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="/static/dashboard.css">
-<title>Create Card</title>
+<title>Edit Card</title>
 </head>
 <body>
   <div>
@@ -52,7 +52,11 @@
   <div class="col-8 col-md-4  bo">
     <form action="/create_card/{{ulist['l_id']}}" method="post">
       <div class="form-floating  mt-4 mb-4">
-        <input type="text" name="lname" id="Lname" class="form-control" disabled value="{{ulist['name']}}">
+          <select class="form-control" name="lname" id="lname">
+            <option>New Delhi</option>
+            <option>Istanbul</option>
+            <option>Jakarta</option>
+          </select>
         <label for="Lname" class="form-label">List Name</label>
       </div>
       <div class="form-floating mb-4">

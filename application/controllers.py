@@ -1,3 +1,4 @@
+from datetime import date
 from flask import Flask, flash, redirect, request, url_for
 from flask import render_template
 from flask import current_app as app
@@ -65,6 +66,7 @@ def signup():
                         new_login=Login(u_id=new_user.u_id, username=request.form["username"],password_hash=pwd)
                         db.session.add(new_login)
                         db.session.commit()
+                        flash("User signed up Successfuly! please log in now")
                         return redirect('/')
                     except:
                         flash("something went wrong")
@@ -119,10 +121,33 @@ def create_card(l_id):
         flash("Card Added")
         return redirect('/dashboard')
 
-@app.route("/delete_list/<int:l_id>",methods=["DELETE"])
+@app.route("/delete_list/<int:l_id>",methods=["GET"])
 @login_required
 def delete_list(l_id):
-    
+    x = db.session.query(Card).filter(Card.l_id==l_id).delete()
+    lists = List.query.filter_by(l_id= l_id).first()
+    db.session.delete(lists)
+    db.session.commit()
+    flash("list deleted Successfuly")
+    return redirect('/dashboard')
+
+@app.route("/delete_card/<int:c_id>",methods=["GET"])
+@login_required
+def delete_card(c_id):
+    card = Card.query.filter_by(c_id= c_id).first()
+    db.session.delete(card)
+    db.session.commit()
+    flash("Card deleted Successfuly")
+    return redirect('/dashboard')
+
+@app.route("/complete_card/<int:c_id>",methods=["GET"])
+@login_required
+def complete_card(c_id):
+    card = Card.query.filter_by(c_id= c_id).first()
+    card.completed=1
+    card.date_of_submission = date.today().strftime("%Y-%m-%d")
+    db.session.commit()
+    flash("Card Completed Successfuly")
     return redirect('/dashboard')
 
 
