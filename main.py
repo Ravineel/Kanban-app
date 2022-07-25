@@ -23,6 +23,10 @@ def create_app():
 
 app, api = create_app()
 
+# @app.route("/docs")
+# def documentation():
+#   return render_template("Swagger.yml")
+
 # Import all the controllers so they are loaded
 from application.controllers import *
 
