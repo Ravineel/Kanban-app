@@ -12,11 +12,12 @@
 </head>
 
 <body>
-  <section class="container-fluid grad h-100 w-100">
-    <div>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid m-0">
-        <a class="navbar-brand" href="#">Welcome!   {{user["fname"]}} </a>
+  <section class="container-fluid vh-100  h-100 grad">
+  <div>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">Welcome!   {{user["fname"]}} </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -27,7 +28,7 @@
               <a class="nav-link active" aria-current="page" href="/dashboard">Dashbord</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Summary</a>
+              <a class="nav-link" href="/summary">Summary</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/logout">Logout</a>
@@ -37,6 +38,8 @@
       </div>
       </div>
     </nav>
+    </div>
+
     {% with errors = get_flashed_messages() %}
     {% if errors %}
     {% for msg in errors %}
@@ -47,7 +50,7 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
-  </div>
+
 
   {% if ulist|length >0 %}  
     <div class="container-fluid py-5 mt-4">
@@ -67,7 +70,7 @@
                       </a>
                     
                       <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="/edit_list">Edit</a></li>
+                        <li><a class="dropdown-item" href="/edit_list/{{data['l_id']}}">Edit</a></li>
                         <li><a class="dropdown-item" href="/delete_list/{{data['l_id']}}">Delete</a></li>
                       </ul>
                   </div>
@@ -91,7 +94,7 @@
                                   </a>
                                 
                                   <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <li><a class="dropdown-item" href="/edit_card">Edit</a></li>
+                                    <li><a class="dropdown-item" href="/edit_card/{{card['c_id']}}">Edit</a></li>
                                     <li><a class="dropdown-item" href="/delete_card/{{card['c_id']}}">Delete</a></li>
                                     {% if card['completed']==0%}
                                     <li><a class="dropdown-item" href="/complete_card/{{card['c_id']}}">Complete</a></li>
@@ -158,6 +161,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+
 </section>
 </body>
 </html>

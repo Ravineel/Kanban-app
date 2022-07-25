@@ -50,25 +50,25 @@
 <section class="container py-5">
 <div class="row d-flex justify-content-center align-items-center py-5">
   <div class="col-8 col-md-4  bo">
-    <form action="/create_card/{{ulist['l_id']}}" method="post">
+    <form action="/edit_card/{{ucard['c_id']}}" method="post">
       <div class="form-floating  mt-4 mb-4">
-          <select class="form-control" name="lname" id="lname">
-            <option>New Delhi</option>
-            <option>Istanbul</option>
-            <option>Jakarta</option>
+          <select class="form-control" name="lid" id="lname">
+           {% for data in ulist%}
+            <option value="{{data['l_id']}}" {% if ucard["l_id"]==data["l_id"] %} selected {% endif %} >{{data["name"]}}</option>
+           {% endfor %}
           </select>
-        <label for="Lname" class="form-label">List Name</label>
+        <label for="lname" class="form-label">List Name</label>
       </div>
       <div class="form-floating mb-4">
-        <input type="text" name="name" id="name" class="form-control">
+        <input type="text" name="name" id="name" class="form-control" value="{{ucard['name']}}">
         <label for="name" class="form-label">Card Name</label>
       </div>
       <div class="form-floating mb-4">
-        <textarea name="description" id="description" cols="30" rows="4" class="form-control"></textarea>
+        <textarea name="description" id="description" cols="30" rows="4" class="form-control">{{ucard['description']}}</textarea>
         <label for="description" class="form-label">Description</label>
       </div>
       <div class="form-floating  mt-4 mb-4">
-        <input type="date" name="deadline" id="deadline" class="form-control">
+        <input type="date" name="deadline" id="deadline" class="form-control" value="{{ucard['deadline']}}">
         <label for="deadline" class="form-label">Deadline</label>
       </div>
       <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>

@@ -121,6 +121,24 @@ def create_card(l_id):
         flash("Card Added")
         return redirect('/dashboard')
 
+@app.route("/edit_card/<int:id>", methods=["GET", "POST"])
+@login_required
+def edit_card(id):
+    if request.method =="GET":
+        ucard= Card.query.filter_by(c_id=id).first()
+        user= User.query.filter_by(u_id=current_user.u_id).first()
+        ulist = List.query.filter_by(u_id=current_user.u_id).all()
+        return render_template("edit_card.html",user=user,ulist=ulist,ucard=ucard)
+    else:
+        card= Card.query.filter_by(c_id=id).first()
+        card.l_id=request.form["lid"]
+        card.name=request.form["name"]
+        card.description=request.form["description"]
+        card.deadline=request.form["deadline"]
+        db.session.commit()
+        flash("Card Updated Successfuly")
+        return redirect('/dashboard')
+
 @app.route("/delete_list/<int:l_id>",methods=["GET"])
 @login_required
 def delete_list(l_id):
