@@ -11,31 +11,30 @@
 <title>Edit Card</title>
 </head>
 <body>
-  <div>
-    
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/dashboard">Welcome!   {{user["fname"]}} </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="d-flex">
-        <div class="collapse navbar-collapse justify-content-end" id="navbarText">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link " aria-current="page" href="/dashboard">Dashbord</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Summary</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
-            </li>
-          </ul>
-        </div>
+  <section class="vh-100 grad">
+    <div class="container-fluid h-100">
+      <div class="row">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a class="navbar-brand" href="/dashboard">Welcome! {{user["fname"]}} </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end" id="navbarText">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/dashboard">Dashbord</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/summary">Summary</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
       </div>
-      </div>
-    </nav>
     {% with errors = get_flashed_messages() %}
     {% if errors %}
     {% for msg in errors %}
@@ -46,12 +45,12 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
-</div>
+
 <section class="container py-5">
 <div class="row d-flex justify-content-center align-items-center py-5">
   <div class="col-8 col-md-4  bo">
     <form action="/edit_card/{{ucard['c_id']}}" method="post">
-      <div class="form-floating  mt-4 mb-4">
+      <div class="form-floating  mt-4 mb-4 text-white">
           <select class="form-control" name="lid" id="lname">
            {% for data in ulist%}
             <option value="{{data['l_id']}}" {% if ucard["l_id"]==data["l_id"] %} selected {% endif %} >{{data["name"]}}</option>
@@ -59,15 +58,15 @@
           </select>
         <label for="lname" class="form-label">List Name</label>
       </div>
-      <div class="form-floating mb-4">
+      <div class="form-floating mb-4 text-white">
         <input type="text" name="name" id="name" class="form-control" value="{{ucard['name']}}">
         <label for="name" class="form-label">Card Name</label>
       </div>
-      <div class="form-floating mb-4">
+      <div class="form-floating mb-4 text-white">
         <textarea name="description" id="description" cols="30" rows="4" class="form-control">{{ucard['description']}}</textarea>
         <label for="description" class="form-label">Description</label>
       </div>
-      <div class="form-floating  mt-4 mb-4">
+      <div class="form-floating  mt-4 mb-4 text-white">
         <input type="date" name="deadline" id="deadline" class="form-control" value="{{ucard['deadline']}}">
         <label for="deadline" class="form-label">Deadline</label>
       </div>
@@ -79,5 +78,8 @@
 </section>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+
+</div>
+</section>
 </body>
 </html>

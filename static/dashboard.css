@@ -24,3 +24,12 @@ i{
 .navbar{
   font-size: 24px;
 }
+input,textarea,select{
+background-color: transparent!important;; 
+color: aliceblue!important;
+font-family: 'Courier New', Courier, monospace!important;
+font-size: medium!important;
+}
+option{
+  color: black!important;
+}
