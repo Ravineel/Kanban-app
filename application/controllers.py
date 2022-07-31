@@ -107,6 +107,35 @@ def create_list():
         flash("List Added")
         return redirect('/dashboard')
 
+
+@app.route("/delete_list/<int:l_id>",methods=["GET"])
+@login_required
+def delete_list(l_id):
+    x = db.session.query(Card).filter(Card.l_id==l_id).delete()
+    lists = List.query.filter_by(l_id= l_id).first()
+    db.session.delete(lists)
+    db.session.commit()
+    flash("list deleted Successfuly")
+    return redirect('/dashboard')
+
+@app.route("/edit_list/<int:id>", methods=["GET", "POST"])
+@login_required
+def edit_list(id):
+    if request.method=="GET":
+        user = User.query.filter_by(u_id=current_user.u_id).first()
+        ulist = List.query.filter_by(l_id=id).first() 
+        return render_template("edit_list.html",user=user,ulist=ulist)
+    else:
+        list_id = request.form["l_id"]
+        list_name = request.form["name"]
+        list_desc = request.form["desc"]
+        lists = List.query.filter_by(l_id=list_id).first()
+        lists.name = list_name
+        lists.description = list_desc
+        db.session.commit()
+        flash("List Updated")
+        return redirect('/dashboard')
+
 @app.route("/create_card/<int:l_id>", methods=["GET", "POST"])
 @login_required
 def create_card(l_id):
@@ -120,6 +149,7 @@ def create_card(l_id):
         db.session.commit()
         flash("Card Added")
         return redirect('/dashboard')
+
 
 @app.route("/edit_card/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -139,15 +169,7 @@ def edit_card(id):
         flash("Card Updated Successfuly")
         return redirect('/dashboard')
 
-@app.route("/delete_list/<int:l_id>",methods=["GET"])
-@login_required
-def delete_list(l_id):
-    x = db.session.query(Card).filter(Card.l_id==l_id).delete()
-    lists = List.query.filter_by(l_id= l_id).first()
-    db.session.delete(lists)
-    db.session.commit()
-    flash("list deleted Successfuly")
-    return redirect('/dashboard')
+
 
 @app.route("/delete_card/<int:c_id>",methods=["GET"])
 @login_required
@@ -167,6 +189,19 @@ def complete_card(c_id):
     db.session.commit()
     flash("Card Completed Successfuly")
     return redirect('/dashboard')
+
+
+@app.route("/summary" , methods=["GET"])
+@login_required
+def summary():
+    user = User.query.filter_by(u_id=current_user.u_id).first()
+    user_list = List.query.filter_by(u_id=user.u_id).all()
+    user_card = Card.query.join(List, Card.l_id==List.l_id)\
+                .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
+                .filter(Card.l_id==List.l_id)\
+                .filter(List.u_id==user.u_id).all()  
+    
+    return render_template("summary.html",user=user,ulist=user_list,ucard=user_card)
 
 
 @app.route("/logout", methods=["GET","POST"])
