@@ -7,7 +7,8 @@ from .database import db
 from application.models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-
+import matplotlib.pyplot as plt
+import numpy as np
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -207,12 +208,21 @@ def summary():
     #             .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
     #             .filter(Card.l_id==List.l_id)\
     #             .filter(List.u_id==user.u_id).all()  
-    tc,cc,pc,oc={},{},{},{}
+    tc,cc,pc,oc=0,0,0,0
     for ulist in user_list:
-        tc[ulist.l_id]= Card.query.filter_by(l_id=ulist.l_id).count()
-        cc[ulist.l_id]= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=1).count()
-        pc[ulist.l_id]= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=0).count()
-        oc[ulist.l_id]= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=2
+        if Card.query.filter_by(l_id=ulist.l_id).first() is not None:
+            tc= Card.query.filter_by(l_id=ulist.l_id).count()
+            cc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=1).count()
+            pc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=0).count()
+            oc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=2).count()
+            l = ["Completed","Pending","Overdue"]
+            y = np.array([cc,pc,oc])
+            plt.pie(y,labels=l,autopct='%1.0f%%')
+            plt.savefig('./static/img/'+str(ulist.l_id)+'.png')
+            plt.close()
+
+
+
 
 @app.route("/logout", methods=["GET","POST"])
 @login_required
