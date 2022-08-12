@@ -1,5 +1,6 @@
 from datetime import date
-from flask import Flask, flash, redirect, request, url_for
+from imp import C_EXTENSION
+from flask import Flask, flash, redirect, request, url_for, session
 from flask import render_template
 from flask import current_app as app
 from .database import db
@@ -11,7 +12,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view='login'
-
+login_manager.needs_refresh_message = (u"Session timedout, please re-login")
 
 @login_manager.user_loader
 def load_user(id):
@@ -27,6 +28,7 @@ def login():
     if request.method=="GET":
         return render_template("home.html")
     else:
+        session.permanent=True
         user = Login.query.filter_by(username=request.form["username"]).first()
         if user:
             if check_password_hash(user.password_hash,request.form["password"]):
@@ -118,18 +120,19 @@ def delete_list(l_id):
     flash("list deleted Successfuly")
     return redirect('/dashboard')
 
-@app.route("/edit_list/<int:id>", methods=["GET", "POST"])
+@app.route("/edit_list/<int:lid>", methods=["GET", "POST"])
 @login_required
-def edit_list(id):
+def edit_list(lid):
     if request.method=="GET":
         user = User.query.filter_by(u_id=current_user.u_id).first()
-        ulist = List.query.filter_by(l_id=id).first() 
+        ulist = List.query.filter_by(l_id=lid).first() 
         return render_template("edit_list.html",user=user,ulist=ulist)
     else:
-        list_id = request.form["l_id"]
         list_name = request.form["name"]
+        print(list_name)       
         list_desc = request.form["desc"]
-        lists = List.query.filter_by(l_id=list_id).first()
+        print(list_desc)
+        lists = List.query.filter_by(l_id=lid).first()
         lists.name = list_name
         lists.description = list_desc
         db.session.commit()
@@ -184,8 +187,12 @@ def delete_card(c_id):
 @login_required
 def complete_card(c_id):
     card = Card.query.filter_by(c_id= c_id).first()
-    card.completed=1
     card.date_of_submission = date.today().strftime("%Y-%m-%d")
+    if card.date_of_submission > card.deadline:
+        flash("Card is overdue")
+        card.completed = 2
+    else:
+        card.completed = 1
     db.session.commit()
     flash("Card Completed Successfuly")
     return redirect('/dashboard')
@@ -196,13 +203,16 @@ def complete_card(c_id):
 def summary():
     user = User.query.filter_by(u_id=current_user.u_id).first()
     user_list = List.query.filter_by(u_id=user.u_id).all()
-    user_card = Card.query.join(List, Card.l_id==List.l_id)\
-                .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
-                .filter(Card.l_id==List.l_id)\
-                .filter(List.u_id==user.u_id).all()  
-    
-    return render_template("summary.html",user=user,ulist=user_list,ucard=user_card)
-
+    # user_card = Card.query.join(List, Card.l_id==List.l_id)\
+    #             .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
+    #             .filter(Card.l_id==List.l_id)\
+    #             .filter(List.u_id==user.u_id).all()  
+    tc,cc,pc,oc={},{},{},{}
+    for ulist in user_list:
+        tc[ulist.l_id]= Card.query.filter_by(l_id=ulist.l_id).count()
+        cc[ulist.l_id]= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=1).count()
+        pc[ulist.l_id]= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=0).count()
+        oc[ulist.l_id]= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=2
 
 @app.route("/logout", methods=["GET","POST"])
 @login_required

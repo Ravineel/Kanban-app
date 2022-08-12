@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -12,4 +13,5 @@ class LocalDevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(SQLITE_DB_DIR, "database.sqlite3")
     DEBUG = False
     SECRET_KEY = 'My super Key'
+    PERMANENT_SESSION_LIFETIME = timedelta(minutes=5)
 
