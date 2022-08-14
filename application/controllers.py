@@ -1,5 +1,6 @@
 from datetime import date
 from imp import C_EXTENSION
+from turtle import color
 from flask import Flask, flash, redirect, request, url_for, session
 from flask import render_template
 from flask import current_app as app
@@ -90,10 +91,17 @@ def dashboard():
     
     user_list = List.query.filter_by(u_id=user.u_id).all()
 
+    for c in Card.query.all():
+        if   (c.completed!=1 or c.completed!=3) and (date.today().strftime("%Y-%m-%d") > c.deadline):
+            c.completed = 2
+    db.session.commit()
+    
     user_card = Card.query.join(List, Card.l_id==List.l_id)\
                 .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
                 .filter(Card.l_id==List.l_id)\
-                .filter(List.u_id==user.u_id).all()  
+                .filter(List.u_id==user.u_id).all() 
+
+  
     return render_template("kanban.html",user=user,ulist=user_list,ucard=user_card)
 
 
@@ -190,10 +198,11 @@ def complete_card(c_id):
     card = Card.query.filter_by(c_id= c_id).first()
     card.date_of_submission = date.today().strftime("%Y-%m-%d")
     if card.date_of_submission > card.deadline:
-        flash("Card is overdue")
-        card.completed = 2
+        flash("Card was overdue")
+        card.completed = 3
     else:
         card.completed = 1
+    
     db.session.commit()
     flash("Card Completed Successfuly")
     return redirect('/dashboard')
@@ -204,24 +213,25 @@ def complete_card(c_id):
 def summary():
     user = User.query.filter_by(u_id=current_user.u_id).first()
     user_list = List.query.filter_by(u_id=user.u_id).all()
-    # user_card = Card.query.join(List, Card.l_id==List.l_id)\
-    #             .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
-    #             .filter(Card.l_id==List.l_id)\
-    #             .filter(List.u_id==user.u_id).all()  
-    tc,cc,pc,oc=0,0,0,0
+    tc,cc,pc,oc,data=0,0,0,0,{}
     for ulist in user_list:
-        if Card.query.filter_by(l_id=ulist.l_id).first() is not None:
-            tc= Card.query.filter_by(l_id=ulist.l_id).count()
-            cc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=1).count()
-            pc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=0).count()
-            oc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=2).count()
-            l = ["Completed","Pending","Overdue"]
-            y = np.array([cc,pc,oc])
-            plt.pie(y,labels=l,autopct='%1.0f%%')
-            plt.savefig('./static/img/'+str(ulist.l_id)+'.png')
-            plt.close()
-
-
+        tc= Card.query.filter_by(l_id=ulist.l_id).count()
+        cc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=1).count()
+        pc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=0).count()
+        dc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=2).count()
+        oc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=3).count()
+        fig = plt.figure(figsize=(5,4))
+        plt.bar("Total Cards",tc,color='b',width=0.4)
+        plt.bar("Completed",cc,color='g',width=0.4)
+        plt.bar("Pending",pc,color='y',width=0.4)
+        plt.bar("Late Submit",oc,color='r',width=0.4)
+        plt.bar("Overdue",dc,color='brown',width=0.4)
+        g = ["Total","Completed","Pending","Late","Over"]
+        plt.legend(g)
+        plt.savefig('./static/img/'+str(ulist.l_id)+'.png')
+        plt.close()
+        print( data)
+    return render_template("summary.html",user=user,ulist=user_list,ldata=data)
 
 
 @app.route("/logout", methods=["GET","POST"])
