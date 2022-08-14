@@ -12,12 +12,14 @@ from flask import abort
 
 class UserAPI(Resource):
 
-    
-    def get():
-        pass
-    
-    def post():
-        pass
+    pass
+
+class ListApi(Resource):
+    pass
+
+class CardApi(Resource):
+    pass
+
     
 
                   

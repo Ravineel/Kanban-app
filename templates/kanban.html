@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <section class="grad vh-100">
+  <section class="grad h-100">
     <div class="container-fluid h-100">
     <div class="row">
 
@@ -105,7 +105,7 @@
                               <p>{{card["description"]}}</p>
                             <h5>Card Deadline: </h5>
                               <p>{{card["deadline"]}}</p>
-                            {% if card['completed']==1 %}
+                            {% if card['completed']==1 or card['completed']==3   %}
                               <h5>Submittted on: </h5>
                               <p>{{card['date_of_submission']}}</p>
                             {% endif %}
@@ -146,10 +146,10 @@
     </div>
 
   {% else %}
-      <p>No List found. Add you List now!</p>
+      <p>No List found. Add your List now!</p>
       <div class="row d-flex justify-content-center align-items-center">
         <div class="col-12 col-md-8">
-          <div class="card bg-light text-center ">
+          <div class="card bg-light text-center align-items-center justify-content-center  p-2">
             <div class="card-body ">
               <form action="/create_list" method="get">
                 <button type="submit" class="btn btn-primary  p-2 ml-2 cust"><i class="fas fa-plus-circle"></i></button><p>Add Your List</p>
