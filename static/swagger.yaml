@@ -82,6 +82,7 @@ paths:
         '200':
           description: ''
           headers: {}
+
   /list/{u_id}:
     get:
       summary: Get all list for user
@@ -101,7 +102,6 @@ paths:
         '200':
           description: ''
           headers: {}
-
 
   /list/create:
     post:
@@ -124,7 +124,6 @@ paths:
           description: ''
           headers: {}
 
-
   /list/delete/{l_id}:
     delete:
       summary: deletes the list 
@@ -144,6 +143,7 @@ paths:
         '200':
           description: ''
           headers: {}
+
   /list/edit/{l_id}:
     put:
       summary: edits the list
@@ -169,6 +169,7 @@ paths:
         '200':
           description: ''
           headers: {}
+
   /card/all/{u_id}:
     get:
       summary: get cards for the given user
@@ -191,7 +192,7 @@ paths:
 
   /card/{c_id}:
     get:
-      summary: get_card_by_id
+      summary: get card by c_id
       tags:
       - Card APIs
       operationId: get_card_by_id
@@ -208,16 +209,22 @@ paths:
         '200':
           description: ''
           headers: {}
-  /card/create/24:
+
+  /card/create/{l_id}:
     post:
       summary: create_card
       tags:
       - Card APIs
-      operationId: create_card
+      operationId: create card
       deprecated: false
       produces:
       - application/json
       parameters:
+      - name: l_id
+        type: integer
+        required: true
+        in: path
+
       - name: Body
         in: body
         required: true
@@ -228,23 +235,30 @@ paths:
         '200':
           description: ''
           headers: {}
-  /card/delete/51:
+
+  /card/delete/{c_id}:
     delete:
-      summary: delete_card
+      summary: delete card
       tags:
       - Card APIs
       operationId: delete_card
       deprecated: false
       produces:
       - application/json
-      parameters: []
+      parameters: 
+      - in: path
+        name: c_id
+        type: integer
+        required: true
+
       responses:
         '200':
           description: ''
           headers: {}
-  /card/edit/50:
+
+  /card/edit/{c_id}:
     put:
-      summary: edit_card
+      summary: edit card
       tags:
       - Card APIs
       operationId: edit_card
@@ -252,6 +266,11 @@ paths:
       produces:
       - application/json
       parameters:
+      - in: path
+        name: c_id
+        type: integer
+        required: true
+
       - name: Body
         in: body
         required: true
@@ -262,16 +281,21 @@ paths:
         '200':
           description: ''
           headers: {}
-  /card/complete/50:
+
+  /card/complete/{c_id}:
     put:
-      summary: complete_card
+      summary: complete call for card
       tags:
       - Card APIs
       operationId: complete_card
       deprecated: false
       produces:
       - application/json
-      parameters: []
+      parameters: 
+      - in: path
+        name: c_id
+        type: integer
+        required: true
       responses:
         '200':
           description: ''
