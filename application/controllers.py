@@ -1,6 +1,4 @@
 from datetime import date
-from imp import C_EXTENSION
-from turtle import color
 from flask import Flask, flash, redirect, request, url_for, session
 from flask import render_template
 from flask import current_app as app

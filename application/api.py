@@ -6,9 +6,8 @@ from application.models import *
 from application.database import db
 from flask import current_app as app
 import werkzeug
-from flask import abort
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from datetime import date
 
 usr ={
     "u_id": fields.Integer,
@@ -151,6 +150,11 @@ create_list = reqparse.RequestParser()
 create_list.add_argument('name', type=str, required=True, help='No name was given!')
 create_list.add_argument('description', type=str, required=False, help='No description was given!')
 create_list.add_argument("u_id", type=int, required=True, help="No user id was given!")
+
+update_lst = reqparse.RequestParser()
+update_lst.add_argument('name', type=str, required=False, help='No name was given!')
+update_lst.add_argument('description', type=str, required=False, help='No description was given!')
+
 class ListApi(Resource):
     
     @marshal_with(lst)
@@ -191,26 +195,208 @@ class ListApi(Resource):
     
     
     
-    def delete():
-        pass
+    def delete(self,l_id):
+        if List.query.filter_by(l_id=l_id).count() == 1:
+            try:
+                x = db.session.query(Card).filter(Card.l_id==l_id).delete()
+                lists = List.query.filter_by(l_id= l_id).first()
+                db.session.delete(lists)
+                db.session.commit()
+                return {"message":"List deleted successfully"},200
+            except:
+                db.session.rollback()
+                return {"message":"List not deleted"},400    
+        else:
+            msg = "List not found!"
+            code=400
+            error="LT003"
+            raise BusinessValidationError(code,error,msg)
+        
     
-    def put():
-        pass
+    def put(self,l_id):
+        args= update_lst.parse_args()
+        name= args.get('name',None)
+        description= args.get('description',None)
+        if name is None:
+            msg = "No name was given!"
+            code=400
+            error="LT001"
+            raise BusinessValidationError(code,error,msg)
+
+        if List.query.filter_by(l_id=l_id).count() == 1:
+            try:
+                lists = List.query.filter_by(l_id=l_id).first()
+                lists.name=name
+                lists.description=description
+                db.session.commit()
+                return {"message":"List updated successfully"},200
+            except:
+                db.session.rollback()
+                return {"message":"List not updated"},400
+        else:
+            msg = "List not found!"
+            code=400
+            error="LT003"
+            raise BusinessValidationError(code,error,msg)
 
 
+get_card = reqparse.RequestParser()
+get_card.add_argument("u_id", type=int, required=True, help="No user id was given!")
+
+create_card = reqparse.RequestParser()
+create_card.add_argument('name', type=str, required=True, help='No name was given!')
+create_card.add_argument('description', type=str, required=False, help='No description was given!')
+create_card.add_argument("deadline", type=str, required=True, help="No deadline was given!")
+
+update_card = reqparse.RequestParser()
+update_card.add_argument('name', type=str, required=True, help='No name was given!')
+update_card.add_argument('description', type=str, required=False, help='No description was given!')
+update_card.add_argument("deadline", type=str, required=False, help="No deadline was given!")
+update_card.add_argument("l_id", type=int, required=True, help="No list id was given!")
+
+cards={
+    "c_id": fields.Integer,
+    "l_id": fields.Integer,
+    "name": fields.String,
+    "description": fields.String,
+    "deadline":fields.String,
+    "completed":fields.Integer,
+    "date_of_submission":fields.String
+}
 class CardApi(Resource):
-    def get():
-        pass
-    
-    def post():
-        pass
 
-    def delete():
-        pass
+    @marshal_with(cards)
+    def get(self,c_id):
+        if Card.query.filter_by(c_id=c_id).count() == 1:
+            try:
+                card = Card.query.filter_by(c_id=c_id).first()
+                return card,200
+            except:
+                msg = "Something went wrong!"
+                code=500
+                error="CD001"
+                raise BusinessValidationError(code,error,msg)
+        else:
+            msg ="Card not found!"
+            code=400
+            error="CD002"
+            raise BusinessValidationError(code,error,msg)
     
-    def put():
-        pass
 
+    def post(self,l_id):
+        args = create_card.parse_args()
+        name= args.get('name',None)
+        description= args.get('description',None)
+        deadline= args.get('deadline',None)
+        completed=0
+        date_of_submission=None
+        if name is None:
+            msg = "No name was given!"
+            code=400
+            error="CD003"
+            raise BusinessValidationError(code,error,msg)
+        try:
+            new_card = Card(name=name,description=description,deadline=deadline,completed=completed,date_of_submission=date_of_submission,l_id=l_id)
+            db.session.add(new_card)
+            db.session.commit()
+            return {"message":"Card created successfully"},200
+        except:
+            db.session.rollback()
+            return {"message":"Card not created"},400     
     
+    
+    def delete(self,c_id):
+        card = Card.query.filter_by(c_id=c_id).first()
+        if card is not None:
+            try:
+                db.session.delete(card)
+                db.session.commit()
+                return {"message":"Card deleted successfully"},200
+            except:
+                db.session.rollback()
+                return {"message":"Card not deleted"},400
+        else:
+            msg = "Card not found!"
+            code=400
+            error="CD002"
+            raise BusinessValidationError(code,error,msg)
+    
+        
+    
+    def put(self,c_id):
+        args= update_card.parse_args()
+        name= args.get('name',None)
+        description= args.get('description',None)
+        deadline= args.get('deadline',None)
+        l_id= args.get('l_id',None)
 
-                  
+        if Card.query.filter_by(c_id=c_id).count() == 1:
+            try:
+                card = Card.query.filter_by(c_id=c_id).first()
+                card.name=name
+                card.description=description
+                card.deadline=deadline
+                card.l_id=l_id
+                db.session.commit()
+                return {"message":"Card updated successfully"},200
+            except:
+                db.session.rollback()
+                return {"message":"Card not updated"},400
+        else:
+            msg = "Card not found!"
+            code=400
+            error="CD002"
+            raise BusinessValidationError(code,error,msg)
+    
+class CardApiC(Resource):
+    
+    @marshal_with(cards)
+    def get(self):
+        args= get_card.parse_args()
+        u_id= args.get('u_id',None)
+
+        if User.query.filter_by(u_id=u_id).count() == 1:
+            if List.query.filter_by(u_id=u_id).count() >0:
+                try:
+                    ucard = Card.query.join(List, Card.l_id==List.l_id)\
+                    .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
+                    .filter(Card.l_id==List.l_id)\
+                    .filter(List.u_id==u_id).all()
+                    return ucard,200 
+                except:
+                    msg = "Something went wrong!"
+                    code=500
+                    error="CD001"
+                    raise BusinessValidationError(code,error,msg)
+
+  
+            else:
+                msg ="No list for the user  found!"
+                code=400
+                error="LT003"
+                raise BusinessValidationError(code,error,msg)
+
+        else:
+            msg ="User not found!"
+            code=400
+            error="U003"
+            raise BusinessValidationError(code,error,msg)
+
+    def put(self,c_id):
+        card = Card.query.filter_by(c_id=c_id).first()
+        if card is not None:
+            try:
+                card.date_of_submission = date.today().strftime("%Y-%m-%d")
+                if card.date_of_submission > card.deadline:
+                    card.completed = 3
+                    msg = "Card is late completed!"
+        
+                else:
+                    card.completed = 1
+                    msg = "Card completed successfully"
+
+                db.session.commit()
+                return {"message":msg},200
+            except:
+                db.session.rollback()
+                return {"message":"Card not completed"},400

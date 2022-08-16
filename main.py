@@ -35,7 +35,9 @@ from application.api import *
 
 api.add_resource(UserAPI, '/api/user/<int:u_id>','/api/user/create')
 api.add_resource(LoginApi, '/api/login')
-api.add_resource(ListApi, '/api/list/<int:u_id>','/api/list/create')
+api.add_resource(ListApi, '/api/list/<int:u_id>','/api/list/create','/api/list/delete/<int:l_id>','/api/list/edit/<int:l_id>')
+api.add_resource(CardApi,  '/api/card/<int:c_id>','/api/card/create/<int:l_id>','/api/card/edit/<int:c_id>','/api/card/delete/<int:c_id>')
+api.add_resource(CardApiC,'/api/card','/api/card/complete/<int:c_id>')
 
 
 
