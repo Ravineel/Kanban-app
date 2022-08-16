@@ -3,6 +3,7 @@ from flask import Flask, flash, redirect, request, url_for, session
 from flask import render_template
 from flask import current_app as app
 from .database import db
+import os
 from application.models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
@@ -239,6 +240,13 @@ def summary():
 @app.route("/logout", methods=["GET","POST"])
 @login_required
 def logout():
+    u_id = current_user.u_id
+    lst = List.query.filter_by(u_id=u_id).all()
+
+    for l in lst:
+        os.remove('./static/img/'+str(l.l_id)+'.png')
+
+
     logout_user()
     flash("You have been loged out")
     return redirect('/')
