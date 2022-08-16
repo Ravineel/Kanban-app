@@ -242,3 +242,7 @@ def logout():
     logout_user()
     flash("You have been loged out")
     return redirect('/')
+
+@app.route("/api-docs")
+def documentation():
+    return render_template("swaggerui.html")

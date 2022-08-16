@@ -1,0 +1,409 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: Kanban
+  contact: {}
+host: localhost:5000
+basePath: /api
+securityDefinitions: {}
+schemes:
+- http
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /user/create:
+    post:
+      summary: Creates user
+      tags:
+      - User Apis
+      operationId: create_user
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/create_user_request'
+      responses:
+        '200':
+          description: 'Created Successfully'
+          headers: {}
+        '400':
+          description: 'Error'
+          headers: {}
+
+  /user/{u_id}:
+    get:
+      summary: gets the user 
+      tags:
+      - User Apis
+      operationId: get_user
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: u_id
+        required: true
+        type: integer
+        minimum: 1
+
+      responses:
+        '200':
+          description: get the user
+          headers: {}
+          
+        '404':
+          description: 'No User Found'
+          headers: {}
+            
+  /login:
+    post:
+      summary: Login_user
+      tags:
+      - User Apis
+      operationId: Login_user
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/Login_user_Request'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /list/{u_id}:
+    get:
+      summary: Get all list for user
+      tags:
+      - List APIs
+      operationId: get_list_uid
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: u_id
+        required: true
+        type: integer
+
+      responses:
+        '200':
+          description: ''
+          headers: {}
+
+
+  /list/create:
+    post:
+      summary: create_list
+      tags:
+      - List APIs
+      operationId: create_list
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/create_list_request'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+
+
+  /list/delete/{l_id}:
+    delete:
+      summary: deletes the list 
+      tags:
+      - List APIs
+      operationId: delete_list
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: l_id
+        required: true
+        type: integer
+
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /list/edit/{l_id}:
+    put:
+      summary: edits the list
+      tags:
+      - List APIs
+      operationId: edit_list
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: l_id
+        required: true
+        type: integer
+
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/edit_list_request'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /card/all/{u_id}:
+    get:
+      summary: get cards for the given user
+      tags:
+      - Card APIs
+      operationId: get_cards
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: u_id
+        required: true
+        type: integer
+
+      responses:
+        '200':
+          description: ''
+          headers: {}
+
+  /card/{c_id}:
+    get:
+      summary: get_card_by_id
+      tags:
+      - Card APIs
+      operationId: get_card_by_id
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: c_id
+        type: integer
+        required: true
+
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /card/create/24:
+    post:
+      summary: create_card
+      tags:
+      - Card APIs
+      operationId: create_card
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/create_card_request'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /card/delete/51:
+    delete:
+      summary: delete_card
+      tags:
+      - Card APIs
+      operationId: delete_card
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /card/edit/50:
+    put:
+      summary: edit_card
+      tags:
+      - Card APIs
+      operationId: edit_card
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/edit_card_request'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /card/complete/50:
+    put:
+      summary: complete_card
+      tags:
+      - Card APIs
+      operationId: complete_card
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+
+
+  
+
+definitions:
+
+  create_user_request:
+    title: create_user_request
+    example:
+      fname: Raj
+      lname: shaam
+      mail: fgf@fhjhhgh.vv
+      dob: 2003-05-23
+      username: test3
+      password: test
+    type: object
+    properties:
+      fname:
+        type: string
+      lname:
+        type: string
+      mail:
+        type: string
+      dob:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+    required:
+    - fname
+    - mail
+    - dob
+    - username
+    - password
+
+  Login_user_Request:
+    title: Login_user_Request
+    example:
+      username: test3
+      password: test
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+    required:
+    - username
+    - password
+
+  create_list_request:
+    title: create_list_request
+    example:
+      u_id: 7
+      name: tasdasdaest
+      description: sadasd
+    type: object
+    properties:
+      u_id:
+        type: integer
+        format: int32
+      name:
+        type: string
+      description:
+        type: string
+    required:
+    - u_id
+    - name
+
+  edit_list_request:
+    title: edit_list_request
+    example:
+      name: AABBCC
+      description: YYXXZZ
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+    required:
+    - name
+    - description
+
+  create_card_request:
+    title: create_card_request
+    example:
+      name: cdsd
+      description: Sdsdsds
+      deadline: 2022-09-15
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      deadline:
+        type: string
+    required:
+    - name
+    - description
+    - deadline
+
+  edit_card_request:
+    title: edit_card_request
+    example:
+      name: Abc
+      description: YXY
+      l_id: 24
+      deadline: 2022-08-15
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      l_id:
+        type: integer
+        format: int32
+      deadline:
+        type: string
+    required:
+    - name
+    - description
+    - l_id
+    - deadline
+tags:
+- name: User Apis
+- name: List APIs
+- name: Card APIs

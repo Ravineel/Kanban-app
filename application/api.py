@@ -351,10 +351,7 @@ class CardApi(Resource):
 class CardApiC(Resource):
     
     @marshal_with(cards)
-    def get(self):
-        args= get_card.parse_args()
-        u_id= args.get('u_id',None)
-
+    def get(self, u_id):
         if User.query.filter_by(u_id=u_id).count() == 1:
             if List.query.filter_by(u_id=u_id).count() >0:
                 try:
