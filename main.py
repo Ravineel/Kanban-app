@@ -31,7 +31,12 @@ app, api = create_app()
 from application.controllers import *
 
 # Add all restful controllers
-from application.api import UserAPI
+from application.api import *
+
+api.add_resource(UserAPI, '/api/user/<int:u_id>','/api/user/create')
+api.add_resource(LoginApi, '/api/login')
+api.add_resource(ListApi, '/api/list/<int:u_id>','/api/list/create')
+
 
 
 if __name__ == '__main__':

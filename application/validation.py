@@ -13,7 +13,7 @@ class BusinessValidationError(HTTPException):
         self.response = make_response(json.dumps(data), status_code)
 
 class NotFoundError(HTTPException):
-    def __init__(self, status_code):
-        self.response = make_response('', status_code)
+    def __init__(self, msg, status_code):
+        self.response = make_response(msg, status_code)
 
 
