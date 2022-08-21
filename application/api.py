@@ -8,6 +8,10 @@ from flask import current_app as app
 import werkzeug
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+import numpy as np
 
 usr ={
     "u_id": fields.Integer,
@@ -397,3 +401,52 @@ class CardApiC(Resource):
             except:
                 db.session.rollback()
                 return {"message":"Card not completed"},400
+
+# sdata  ={
+#     "tc": fields.Integer,
+#     "cc":fields.Integer,
+#     "pc":fields.Integer,
+#     "oc":fields.Integer,
+#     "dc":fields.Integer,
+#     "ac":fields.Integer,
+#     "ap":fields.Integer
+# }
+
+
+class SummaryApi(Resource):
+ 
+    def get(self,u_id):
+
+        user = User.query.filter_by(u_id=u_id).first()
+        if user:
+            ulist = List.query.filter_by(u_id=u_id).all()
+            data={}
+            for l in ulist:
+                tc= Card.query.filter_by(l_id=l.l_id).count()
+                if tc > 0:    
+                    cc= Card.query.filter_by(l_id=l.l_id).filter_by(completed=1).count()#complete card on time
+                    pc= Card.query.filter_by(l_id=l.l_id).filter_by(completed=0).count()#pending  card on time
+                    dc= Card.query.filter_by(l_id=l.l_id).filter_by(completed=2).count()#not completed but deadline passed
+                    oc= Card.query.filter_by(l_id=l.l_id).filter_by(completed=3).count()#late submission
+                    fig = plt.figure(figsize=(6,5))
+                    plt.bar("Total Cards",tc,color='b',width=0.4)
+                    plt.bar("Completed",cc,color='g',width=0.4)
+                    plt.bar("Late Submit",oc,color='r',width=0.4)
+                    plt.bar("Pending",pc,color='y',width=0.4)
+                    plt.bar("Overdue",dc,color='brown',width=0.4)
+                    g = ["Total","Completed","Late","Pending","Over"]
+                    plt.legend(g)
+                    plt.savefig('./static/img/'+str(l.l_id)+'.png')
+                    plt.close()
+                    ac = cc+oc #total compelted cards
+                    ap = pc+dc #total pending cards
+                    data[l.l_id]={"tc":tc,"cc":cc,"pc":pc,"oc":oc,"dc":dc,"ac":ac,"ap":ap}
+                    
+                else:
+                    data[l.l_id]={"tc":0,"cc":0,"pc":0,"oc":0,"dc":0,"ac":0,"ap":0}       
+            return data,200
+        else:
+            msg ="User not found!"
+            code=400
+            error="U003"
+            raise BusinessValidationError(code,error,msg)

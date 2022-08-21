@@ -300,9 +300,25 @@ paths:
         '200':
           description: ''
           headers: {}
+  /summary/{u_id}:
+    get:
+      summary: get summary of the list
+      tags:
+      - Summary APIs
+      operationId: get_summary
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: u_id
+        required: true
+        type: integer
 
-
-  
+      responses:
+        '200':
+          description: ''
+          headers: {}
 
 definitions:
 
@@ -431,3 +447,4 @@ tags:
 - name: User Apis
 - name: List APIs
 - name: Card APIs
+- name: Summary ApIs

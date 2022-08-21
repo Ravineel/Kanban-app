@@ -220,7 +220,7 @@ def summary():
         tc= Card.query.filter_by(l_id=ulist.l_id).count()
         cc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=1).count()#complete card on time
         pc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=0).count()#pending  card on time
-        dc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=2).count()#no completed but deadline passed
+        dc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=2).count()#not completed but deadline passed
         oc= Card.query.filter_by(l_id=ulist.l_id).filter_by(completed=3).count()#late submission
         fig = plt.figure(figsize=(6,5))
         plt.bar("Total Cards",tc,color='b',width=0.4)
@@ -232,7 +232,9 @@ def summary():
         plt.legend(g)
         plt.savefig('./static/img/'+str(ulist.l_id)+'.png')
         plt.close()
-        data[ulist.l_id]={"tc":tc,"cc":cc,"pc":pc,"oc":oc,"dc":dc}
+        ac = cc+oc #total compelted cards
+        ap = pc+dc #total pending cards
+        data[ulist.l_id]={"tc":tc,"cc":cc,"pc":pc,"oc":oc,"dc":dc,"ac":ac,"ap":ap}
         print(data)
     return render_template("summary.html",user=user,ulist=user_list,ldata=data)
 
