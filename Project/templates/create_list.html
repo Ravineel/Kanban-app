@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="Description" content="Enter your description here"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="{{url_for('static',filename='css/dashboard.css')}}">
+<title>Create List</title>
+</head>
+<body>
+  <section class="vh-100 grad">
+    <div class="container-fluid h-100">
+      <div class="row">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a class="navbar-brand" href="/dashboard">Welcome! {{user["fname"]}} </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+            aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end" id="navbarText">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/dashboard">Dashbord</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/summary">Summary</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    {% with errors = get_flashed_messages() %}
+    {% if errors %}
+    {% for msg in errors %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert"> 
+      {{msg}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+<section class="container py-5">
+<div class="row d-flex justify-content-center align-items-center py-5">
+  <div class="col-8 col-md-4  bo">
+    <form action="/create_list" method="post">
+      <div class="form-floating  mt-4 mb-4 text-white">
+        <input type="text" name="name" id="Name" class="form-control">
+        <label for="Name" class="form-label">Name</label>
+      </div>
+      <div class="form-floating mb-4 text-white">
+        <textarea name="desc" id="description" cols="30" rows="4" class="form-control"></textarea>
+        <label for="description" class="form-label">Desciption</label>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
+    </form>
+
+  </div>
+</div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+</div>
+</section>
+</body>
+</html>
