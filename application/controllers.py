@@ -1,4 +1,5 @@
 from datetime import date
+from traceback import print_tb
 from flask import Flask, flash, redirect, request, url_for, session
 from flask import render_template
 from flask import current_app as app
@@ -11,6 +12,7 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import numpy as np
+import csv
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -98,12 +100,39 @@ def dashboard():
     db.session.commit()
     
     user_card = Card.query.join(List, Card.l_id==List.l_id)\
-                .add_columns(Card.c_id, Card.l_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
+                .add_columns(List.name, Card.l_id, Card.c_id, Card.name, Card.description, Card.deadline, Card.completed,Card.date_of_submission)\
                 .filter(Card.l_id==List.l_id)\
                 .filter(List.u_id==user.u_id).all() 
 
+    
+    with open('./static/download/'+str(user.u_id)+'_list.csv','w') as f:
+        write = csv.writer(f, delimiter=',')
+        write.writerow(['List Name','List Description'])
+        for l in user_list:
+            write.writerow([l.name,l.description])
+
+    with open('./static/download/'+str(user.u_id)+'_card.csv','w') as f:
+        write = csv.writer(f, delimiter=',')
+        write.writerow(['list_name','list_id','card_id','card_name','card_description','card_deadline','card_completed','card_date_of_submission'])
+        for c in user_card:
+            if c[8] is None:
+                dos = 0
+            else:
+                dos = c[8]
+            
+            if c[7]==0:
+                completed = 'Not Completed'
+            elif c[7]==1:
+                completed = 'Completed'
+            elif c[7]==2:
+                completed = 'Overdue'
+            else:
+                completed = 'late submission'
+
+            write.writerow([c[1],c[2],c[3],c[4],c[5],c[6],completed,dos])
   
-    return render_template("kanban.html",user=user,ulist=user_list,ucard=user_card)
+
+    return render_template("kanban.html",user=user,ulist=user_list,ucard=user_card, os=os)
 
 
 @app.route("/create_list", methods=["GET", "POST"])
@@ -246,9 +275,19 @@ def logout():
     u_id = current_user.u_id
     lst = List.query.filter_by(u_id=u_id).all()
 
-    for l in lst:
-        os.remove('./static/img/'+str(l.l_id)+'.png')
-
+    try:
+        for l in lst:
+            os.remove('./static/img/'+str(l.l_id)+'.png')
+    except:
+        pass
+    try:
+        os.remove('./static/download/'+str(u_id)+'_list.csv')
+    except:
+        pass
+    try:
+        os.remove('./static/download/'+str(u_id)+'_card.csv')
+    except:
+        pass
 
     logout_user()
     flash("You have been loged out")

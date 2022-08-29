@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="{{url_for('static',filename='css/dashboard.css')}}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
 <title>Home</title>
 </head>
 
@@ -32,6 +34,14 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Downloads</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="/static/download/{{user['u_id']}}_list.csv" download="list">List CSV</a>
+                <a class="dropdown-item" href="/static/download/{{user['u_id']}}_card.csv" download="card">Card CSV</a>
+              </div>
+              
             </li>
           </ul>
         </div>
@@ -160,8 +170,7 @@
       </div>
   {% endif %}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+
 </div>
 </section>
 </body>
