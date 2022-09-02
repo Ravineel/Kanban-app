@@ -263,7 +263,7 @@ def summary():
         plt.bar("Overdue",dc,color='brown',width=0.4)
         g = ["Total","Completed","Late","Pending","Over"]
         plt.legend(g)
-        plt.savefig('./static/img/'+str(ulist.l_id)+'.png')
+        plt.savefig('/tmp/'+str(ulist.l_id)+'.png')
         plt.close()
         ac = cc+oc #total compelted cards
         ap = pc+dc #total pending cards
