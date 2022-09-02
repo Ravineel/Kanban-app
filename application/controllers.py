@@ -105,13 +105,13 @@ def dashboard():
                 .filter(List.u_id==user.u_id).all() 
 
     
-    with open('./static/download/'+str(user.u_id)+'_list.csv','w') as f:
+    with open('/app/static/download/'+str(user.u_id)+'_list.csv','w') as f:
         write = csv.writer(f, delimiter=',')
         write.writerow(['List Name','List Description'])
         for l in user_list:
             write.writerow([l.name,l.description])
 
-    with open('./static/download/'+str(user.u_id)+'_card.csv','w') as f:
+    with open('/app/static/download/'+str(user.u_id)+'_card.csv','w') as f:
         write = csv.writer(f, delimiter=',')
         write.writerow(['list_name','list_id','card_id','card_name','card_description','card_deadline','card_completed','card_date_of_submission'])
         for c in user_card:
@@ -277,15 +277,15 @@ def logout():
 
     try:
         for l in lst:
-            os.remove('./static/img/'+str(l.l_id)+'.png')
+            os.remove('/app/static/img/'+str(l.l_id)+'.png')
     except:
         pass
     try:
-        os.remove('./static/download/'+str(u_id)+'_list.csv')
+        os.remove('/app/static/download/'+str(u_id)+'_list.csv')
     except:
         pass
     try:
-        os.remove('./static/download/'+str(u_id)+'_card.csv')
+        os.remove('/app/static/download/'+str(u_id)+'_card.csv')
     except:
         pass
 
